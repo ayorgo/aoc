@@ -5,7 +5,7 @@ path = Path(__file__).with_name('data.txt')
 with path.open() as file:
     data = file.read().rstrip('\n')
 
-data = deque(instruction.split() + [2] if instruction.startswith('addx') else [instruction, 1] for instruction in data.split('\n'))
+program = deque(instruction.split() + [2] if instruction.startswith('addx') else [instruction, 1] for instruction in data.split('\n'))
 
 # ------
 # Part 1
@@ -13,7 +13,7 @@ data = deque(instruction.split() + [2] if instruction.startswith('addx') else [i
 
 x = 1
 cycle = 1
-cache = data.popleft()
+cache = program.popleft()
 cache[-1] -= 1
 snaphots = []
 while True:
@@ -25,9 +25,9 @@ while True:
             x += int(cache[1])
 
         # Queue new instruction
-        if not data:
+        if not program:
             break
-        cache = data.popleft()
+        cache = program.popleft()
     cache[-1] -= 1
 
     if (cycle - 20) % 40 == 0:
@@ -38,14 +38,27 @@ print(sum(snaphots))
 # Part 2
 # ------
 
+program = deque(instruction.split() + [2] if instruction.startswith('addx') else [instruction, 1] for instruction in data.split('\n'))
+
 x = 1
 cycle = 1
-cache = data.popleft()
+cache = program.popleft()
 cache[-1] -= 1
 image = []
-row = []
 while True:
+    sprite = [x - 1, x, x + 1]
+    cursor = cycle % 40
+    if cursor == 1:
+        row = []
+        image.append(row)
+
+    # What to print
+    if (cursor - 1) in sprite:
+        row.append('#')
+    else:
+        row.append('.')
     cycle += 1
+
     if cache[-1] == 0:
 
         # Finish current instruction
@@ -53,11 +66,10 @@ while True:
             x += int(cache[1])
 
         # Queue new instruction
-        if not data:
+        if not program:
             break
-        cache = data.popleft()
+        cache = program.popleft()
     cache[-1] -= 1
 
-    if cycle % 40 == 0:
-        snaphots.append(cycle*x)
-print(image)
+for row in image:
+    print(''.join(row))
