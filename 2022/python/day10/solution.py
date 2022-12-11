@@ -32,7 +32,9 @@ while True:
 
     if (cycle - 20) % 40 == 0:
         snaphots.append(cycle*x)
-print(sum(snaphots))
+
+result = sum(snaphots)
+print(result)
 
 # ------
 # Part 2
@@ -71,5 +73,5 @@ while True:
         cache = program.popleft()
     cache[-1] -= 1
 
-for row in image:
-    print(''.join(row))
+result = '\n'.join(''.join(row) for row in image)
+print(result)
